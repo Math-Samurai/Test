@@ -1,0 +1,16 @@
+D:\C#\PracticalWork\bin\Debug\net5.0\PracticalWork.exe
+D:\C#\PracticalWork\bin\Debug\net5.0\PracticalWork.deps.json
+D:\C#\PracticalWork\bin\Debug\net5.0\PracticalWork.runtimeconfig.json
+D:\C#\PracticalWork\bin\Debug\net5.0\PracticalWork.runtimeconfig.dev.json
+D:\C#\PracticalWork\bin\Debug\net5.0\PracticalWork.dll
+D:\C#\PracticalWork\bin\Debug\net5.0\ref\PracticalWork.dll
+D:\C#\PracticalWork\bin\Debug\net5.0\PracticalWork.pdb
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.csprojAssemblyReference.cache
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.GeneratedMSBuildEditorConfig.editorconfig
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.AssemblyInfoInputs.cache
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.AssemblyInfo.cs
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.csproj.CoreCompileInputs.cache
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.dll
+D:\C#\PracticalWork\obj\Debug\net5.0\ref\PracticalWork.dll
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.pdb
+D:\C#\PracticalWork\obj\Debug\net5.0\PracticalWork.genruntimeconfig.cache
