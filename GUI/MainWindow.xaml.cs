@@ -12,13 +12,41 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
 using PracticalWork;
 
 namespace GUI
 {
+
     public partial class MainWindow : Window
     {
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs args)
+        {
+            if (currentCol.IsChanged)
+            {
+               MessageBoxResult res = MessageBox.Show("Есть несохранённые изменения в коллекции, хотите сохранить их?", "Предупреждение.", MessageBoxButton.YesNoCancel);
+                if (res == MessageBoxResult.Yes)
+                {
+                    Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                    if (dlg.ShowDialog() == true)
+                    {
+                        currentCol.Save(dlg.FileName);
+                    }
+                } else if (res == MessageBoxResult.No)
+                {
+                    base.OnClosing(args);
+                } else
+                {
+                    args.Cancel = true;
+                }
+            }
+        }
         private V3MainCollection currentCol;
+        private bool isV3Col(object ob)
+        {
+            return false;
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -43,7 +71,12 @@ namespace GUI
                     }
                 }
                 currentCol = new V3MainCollection();
-                allElements.DataContext = currentCol;
+                this.DataContext = currentCol;
+                
+                Binding bind = new Binding();
+                bind.Source = currentCol;
+                bind.Path = new PropertyPath("IsChanged");
+                IsChangedText.SetBinding(TextBlock.TextProperty, bind);
             } catch
             {
                 MessageBox.Show("Не удалось создать новую коллекцию.", "Ошибка.");
@@ -95,7 +128,13 @@ namespace GUI
                         currentCol = new V3MainCollection();
                     }
                     currentCol.Load(dlg.FileName);
-                    allElements.DataContext = currentCol;
+                    currentCol.IsChanged = false;
+                    this.DataContext = currentCol;
+
+                    Binding bind = new Binding();
+                    bind.Source = currentCol;
+                    bind.Path = new PropertyPath("IsChanged");
+                    IsChangedText.SetBinding(TextBlock.TextProperty, bind);
                 }
             } catch
             {
@@ -117,6 +156,38 @@ namespace GUI
                 MessageBox.Show("Не удалось добавить элементы по умолчанию в коллекцию.", "Ошибка.");
             }
         }
+        private void AddDefaultV3DataCollection(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                if (currentCol == null)
+                {
+                    MessageBox.Show("Сначала создайте коллекцию.", "Ошибка.");
+                    return;
+                }
+                V3DataCollection col = new V3DataCollection("Base", DateTime.Now);
+                currentCol.Add(col);
+            } catch
+            {
+                MessageBox.Show("Не удалось добавить элемент в коллекцию.", "Ошибка.");
+            }
+        }
+        private void AddDefaultV3DataOnGrid(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                if (currentCol == null)
+                {
+                    MessageBox.Show("Сначала создайте коллекцию.", "Ошибка.");
+                    return;
+                }
+                V3DataOnGrid col = new V3DataOnGrid("Base", DateTime.Now, new Grid1D(0.0f, 0), new Grid1D(0.0f, 0));
+                currentCol.Add(col);
+            } catch
+            {
+                MessageBox.Show("Не удалось добавить элемент в коллекцию.", "Ошибка.");
+            }
+        }
         private void AddFromFile(object sender, RoutedEventArgs args)
         {
             try
@@ -135,6 +206,52 @@ namespace GUI
             } catch
             {
                 MessageBox.Show("Ошибка при чтении из файла.", "Ошибка.");
+            }
+        }
+        private void Remove(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                if (currentCol == null)
+                {
+                    MessageBox.Show("Сначала создайте коллекцию.", "Ошибка.");
+                    return;
+                }
+                V3Data col = (V3Data)allElements.SelectedItem;
+                currentCol.Remove(col.Data, col.Time);
+            } catch
+            {
+                MessageBox.Show("Не удалось удалить элемент.", "Ошибка.");
+            }
+        }
+        private void V3DataColViewFilter(object sender, FilterEventArgs args)
+        {
+            V3Data item = (V3Data)args.Item;
+            if (item != null)
+            {
+                if (item.GetType() == typeof(V3DataCollection))
+                {
+                    args.Accepted = true;
+                } else
+                {
+                    args.Accepted = false;
+                }
+            }
+        }
+
+        private void V3DataOnGridViewFilter(object sender, FilterEventArgs args)
+        {
+            V3Data item = (V3Data)args.Item;
+            if (item != null)
+            {
+                if (item.GetType() == typeof(V3DataOnGrid))
+                {
+                    args.Accepted = true;
+                }
+                else
+                {
+                    args.Accepted = false;
+                }
             }
         }
     }

@@ -4,8 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
+        xmlns:PracticalWork="clr-namespace:PracticalWork;assembly=PracticalWork"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000">
+    <Window.Resources>
+        <CollectionViewSource Source="{Binding}" x:Key="allElemsView"/>
+        <CollectionViewSource Source="{Binding}" x:Key="V3DataColView" Filter="V3DataColViewFilter"/>
+        <CollectionViewSource Source="{Binding}" x:Key="V3DataOnGridView" Filter="V3DataOnGridViewFilter"/>
+        <local:FirstConverter x:Key="firstConv"/>
+        <local:SecondConverter x:Key="secondConv"/>
+        <local:ThirdConverter x:Key="thirdConv"/>
+        <DataTemplate x:Key="V3DataColTemplate">
+            <StackPanel>
+                <TextBlock Text="{Binding Converter={StaticResource firstConv}}"/>
+                <TextBlock Text="{Binding Converter={StaticResource secondConv}}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -18,7 +33,10 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <ListBox Name="allElements" HorizontalAlignment="Center" Height="447" VerticalAlignment="Center" Width="333" ItemsSource="{Binding}"/>
+            <ListBox Name="allElements" HorizontalAlignment="Center" Height="459" VerticalAlignment="Center" Width="340" ItemsSource="{Binding Source={StaticResource allElemsView}}"/>
+            <ListBox Name="V3DataColElements" Grid.Column="1" HorizontalAlignment="Center" Height="229" VerticalAlignment="Top" Width="340" ItemsSource="{Binding Source={StaticResource V3DataColView}}"/>
+            <ListBox Name="V3DataOnGridElements" Grid.Column="2" HorizontalAlignment="Center" Height="458" VerticalAlignment="Center" Width="340" ItemsSource="{Binding Source={StaticResource V3DataOnGridView}}"/>
+            <ListBox Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="229" Margin="333,229,0,0" VerticalAlignment="Top" Width="330" ItemsSource="{Binding ElementName=V3DataColElements, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource V3DataColTemplate}}"/>
         </Grid>
         <Menu HorizontalAlignment="Center" Height="58" VerticalAlignment="Center" Width="1000">
             <MenuItem Header="File">
@@ -28,11 +46,13 @@
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Add defaults" Click="AddDefaults"/>
-                <MenuItem Header="Add default V3DataCollection"/>
-                <MenuItem Header="Add default V3DataOnGrid"/>
+                <MenuItem Header="Add default V3DataCollection" Click="AddDefaultV3DataCollection"/>
+                <MenuItem Header="Add default V3DataOnGrid" Click="AddDefaultV3DataOnGrid"/>
                 <MenuItem Header="Add element from file" Click="AddFromFile"/>
-                <MenuItem Header="Remove"/>
+                <MenuItem Header="Remove" Click="Remove"/>
             </MenuItem>
         </Menu>
+        <TextBlock Name="IsChangedText" HorizontalAlignment="Left" Height="53" Margin="0,5,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="330"/>
+        <TextBlock Grid.Row="2" Margin="664,0,0,0" Text="{Binding ElementName=V3DataOnGridElements, Path=SelectedItem, Converter={StaticResource thirdConv}}"/>
     </Grid>
 </Window>

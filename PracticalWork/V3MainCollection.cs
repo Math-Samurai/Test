@@ -8,16 +8,20 @@ using System.Numerics;
 using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.CompilerServices;
 
 namespace PracticalWork
 {
     [Serializable]
-    public class V3MainCollection : IEnumerable<V3Data>, ISerializable, INotifyCollectionChanged
+    public class V3MainCollection : IEnumerable<V3Data>, ISerializable, INotifyCollectionChanged, INotifyPropertyChanged
     {
+        private bool isChanged;
         [field: NonSerialized]
         private event DataChangedEventHandler DataChanged;
         [field: NonSerialized]
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler PropertyChanged;
         public List<V3Data> list;
         public V3MainCollection()
         {
@@ -64,8 +68,15 @@ namespace PracticalWork
         }
         public bool IsChanged
         {
-            get;
-            set;
+            get
+            {
+                return isChanged;
+            }
+            set
+            {
+                isChanged = value;
+                OnIsChangedChanged("IsChanged");
+            }
         }
         public int MinNumberOfCalcs
         {
@@ -114,28 +125,12 @@ namespace PracticalWork
                 return res;
             }
         }
-        public IEnumerable<V3Data> GetV3DataColl
-        {
-            get
-            {
-                var V3Collection = from item in list where item.GetType() == typeof(V3DataCollection) select item;
-                return V3Collection;
-            }
-        }
-        public IEnumerable<V3Data> GetV3DataOnGrid
-        {
-            get
-            {
-                var V3Collection = from item in list where item.GetType() == typeof(V3DataOnGrid) select item;
-                return V3Collection;
-            }
-        }
         public void Add(V3Data item)
         {
             list.Add(item);
             item.PropertyChanged += this.OnPropertyChanged;
             DataChanged(this, new DataChangedEventArgs(ChangeInfo.Add, (list.Count - 1).ToString() + " " + list.Count.ToString() + "\n"));
-            CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, list));
+            CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         public void Save(string filename)
         {
@@ -163,6 +158,7 @@ namespace PracticalWork
                 fr = new BinaryFormatter();
                 List<V3Data> temp = (List<V3Data>)fr.Deserialize(file);
                 this.list = temp;
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             } catch
             {
                 throw new Exception();
@@ -193,7 +189,7 @@ namespace PracticalWork
             if (list.RemoveAll(x => temp.Contains(x)) > 0)
             {
                 DataChanged(this, new DataChangedEventArgs(ChangeInfo.Remove, PrevCount.ToString() + " " + list.Count.ToString() + "\n"));
-                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, list));
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                 return true;
             }
             return false;
@@ -258,6 +254,13 @@ namespace PracticalWork
         private static void OnDataChanged(object source, DataChangedEventArgs args)
         {
             Console.WriteLine(args.ToString());
+        }
+        public void OnIsChangedChanged([CallerMemberName]string prop = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
         }
     }
 }

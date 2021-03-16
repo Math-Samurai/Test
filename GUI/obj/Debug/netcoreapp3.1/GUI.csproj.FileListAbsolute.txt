@@ -20,3 +20,4 @@ D:\C#\GUI\obj\Debug\netcoreapp3.1\GUI.csproj.CopyComplete
 D:\C#\GUI\obj\Debug\netcoreapp3.1\GUI.dll
 D:\C#\GUI\obj\Debug\netcoreapp3.1\GUI.pdb
 D:\C#\GUI\obj\Debug\netcoreapp3.1\GUI.genruntimeconfig.cache
+D:\C#\GUI\obj\Debug\netcoreapp3.1\GeneratedInternalTypeHelper.g.cs
