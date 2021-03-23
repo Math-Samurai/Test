@@ -23,22 +23,22 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="8*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="1" Margin="0,10,0,58" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <ListBox Name="allElements" HorizontalAlignment="Center" Height="459" VerticalAlignment="Center" Width="340" ItemsSource="{Binding Source={StaticResource allElemsView}}"/>
-            <ListBox Name="V3DataColElements" Grid.Column="1" HorizontalAlignment="Center" Height="229" VerticalAlignment="Top" Width="340" ItemsSource="{Binding Source={StaticResource V3DataColView}}"/>
-            <ListBox Name="V3DataOnGridElements" Grid.Column="2" HorizontalAlignment="Center" Height="458" VerticalAlignment="Center" Width="340" ItemsSource="{Binding Source={StaticResource V3DataOnGridView}}"/>
-            <ListBox Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="229" Margin="333,229,0,0" VerticalAlignment="Top" Width="330" ItemsSource="{Binding ElementName=V3DataColElements, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource V3DataColTemplate}}"/>
+            <ListBox Name="allElements" HorizontalAlignment="Center" Height="438" VerticalAlignment="Center" Width="313" ItemsSource="{Binding Source={StaticResource allElemsView}}"/>
+            <ListBox Name="V3DataColElements" Grid.Column="1" HorizontalAlignment="Center" Height="214" VerticalAlignment="Top" Width="313" ItemsSource="{Binding Source={StaticResource V3DataColView}}" RenderTransformOrigin="0.522,0.343"/>
+            <ListBox Name="V3DataOnGridElements" Grid.Column="2" HorizontalAlignment="Center" Height="437" VerticalAlignment="Center" Width="316" ItemsSource="{Binding Source={StaticResource V3DataOnGridView}}"/>
+            <ListBox HorizontalAlignment="Center" Height="219" Margin="0,219,0,0" VerticalAlignment="Top" Width="313" ItemsSource="{Binding ElementName=V3DataColElements, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource V3DataColTemplate}}" Grid.Column="1"/>
         </Grid>
-        <Menu HorizontalAlignment="Center" Height="58" VerticalAlignment="Center" Width="1000">
+        <Menu HorizontalAlignment="Center" Height="auto" VerticalAlignment="Top" Width="auto">
             <MenuItem Header="File">
                 <MenuItem Header="New" Click="New"/>
                 <MenuItem Header="Open" Click="Open"/>
@@ -52,7 +52,8 @@
                 <MenuItem Header="Remove" Click="Remove"/>
             </MenuItem>
         </Menu>
-        <TextBlock Name="IsChangedText" HorizontalAlignment="Left" Height="53" Margin="0,5,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="330"/>
-        <TextBlock Grid.Row="2" Margin="664,0,0,0" Text="{Binding ElementName=V3DataOnGridElements, Path=SelectedItem, Converter={StaticResource thirdConv}}"/>
+        <TextBlock Name="IsChangedText" HorizontalAlignment="Left" Height="53" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="314" Margin="0,0,0,-50"/>
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="53" Width="314" Grid.Row="2" Margin="633,0,0,-50" Text="{Binding ElementName=V3DataOnGridElements, Path=SelectedItem, Converter={StaticResource thirdConv}}"/>
+        <TextBlock Name="MaxDistanceText" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="53" Width="314" Grid.Row="2" Margin="314,0,0,-50"/>
     </Grid>
 </Window>

@@ -14,7 +14,7 @@ namespace GUI
             string res = "";
             if (ob != null)
             {
-                res += "x: " + ob.Ox.Count + ", y: " + ob.Oy.Count + "\n";
+                res += "Количество точек по оси х: " + ob.Ox.Count + "\nКоличество точек по оси y: " + ob.Oy.Count + "\n";
             }
             return res;
         }

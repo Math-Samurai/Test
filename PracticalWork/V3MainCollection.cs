@@ -97,10 +97,18 @@ namespace PracticalWork
             {
                 var V3Grid = from item in list where item.GetType() == typeof(V3DataOnGrid) select item;
                 var V3Collection = from item in list where item.GetType() == typeof(V3DataCollection) select item;
-                var V3GridMaxDistances = from V3DataOnGrid item in V3Grid select Vector2.Distance(new Vector2(item.Ox.Step * (item.Ox.Count - 1), item.Oy.Step * (item.Oy.Count - 1)), new Vector2(0, 0));
+                var V3GridMaxDistances = from V3DataOnGrid item in V3Grid select Vector2.Distance(new Vector2(item.Ox.Step * (item.Ox.Count > 0 ? item.Ox.Count - 1 : 0), item.Oy.Step * (item.Oy.Count > 0 ? item.Oy.Count - 1 : 0)), new Vector2(0, 0));
                 var V3CollectionDistances = from V3DataCollection item in V3Collection from elem1 in item.List from elem2 in item.List select Vector2.Distance(new Vector2(elem1.Coord.X, elem1.Coord.Y), new Vector2(elem2.Coord.X, elem2.Coord.Y));
-                float V3GridMaxDistance = V3GridMaxDistances.Max();
-                float V3CollectionMaxDistance = V3CollectionDistances.Max();
+                float V3GridMaxDistance = 0;
+                float V3CollectionMaxDistance = 0;
+                if (V3GridMaxDistances.Count() != 0)
+                {
+                    V3GridMaxDistance = V3GridMaxDistances.Max();
+                }
+                if (V3CollectionDistances.Count() != 0)
+                {
+                    V3CollectionMaxDistance = V3CollectionDistances.Max();
+                }
                 return (V3GridMaxDistance > V3CollectionMaxDistance) ? V3GridMaxDistance : V3CollectionMaxDistance;
             }
         }
@@ -250,6 +258,7 @@ namespace PracticalWork
         public void OnCollectionChanged(object source, NotifyCollectionChangedEventArgs args)
         {
             IsChanged = true;
+            PropertyChanged(this, new PropertyChangedEventArgs("MaxDistance"));
         }
         private static void OnDataChanged(object source, DataChangedEventArgs args)
         {

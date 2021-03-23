@@ -23,23 +23,28 @@ namespace GUI
     {
         protected override void OnClosing(System.ComponentModel.CancelEventArgs args)
         {
-            if (currentCol.IsChanged)
-            {
-               MessageBoxResult res = MessageBox.Show("Есть несохранённые изменения в коллекции, хотите сохранить их?", "Предупреждение.", MessageBoxButton.YesNoCancel);
-                if (res == MessageBoxResult.Yes)
+            if (currentCol != null) {
+                if (currentCol.IsChanged)
                 {
-                    Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                    if (dlg.ShowDialog() == true)
+                    MessageBoxResult res = MessageBox.Show("Есть несохранённые изменения в коллекции, хотите сохранить их?", "Предупреждение.", MessageBoxButton.YesNoCancel);
+                    if (res == MessageBoxResult.Yes)
                     {
-                        currentCol.Save(dlg.FileName);
+                        Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                        if (dlg.ShowDialog() == true)
+                        {
+                            currentCol.Save(dlg.FileName);
+                        }
+                    } else if (res == MessageBoxResult.No)
+                    {
+                        base.OnClosing(args);
+                    } else
+                    {
+                        args.Cancel = true;
                     }
-                } else if (res == MessageBoxResult.No)
-                {
-                    base.OnClosing(args);
-                } else
-                {
-                    args.Cancel = true;
                 }
+            } else
+            {
+                base.OnClosing(args);
             }
         }
         private V3MainCollection currentCol;
@@ -76,7 +81,14 @@ namespace GUI
                 Binding bind = new Binding();
                 bind.Source = currentCol;
                 bind.Path = new PropertyPath("IsChanged");
+                bind.StringFormat = "Была ли изменена коллекция с момента своего послежнего сохранения: {0}.";
                 IsChangedText.SetBinding(TextBlock.TextProperty, bind);
+
+                Binding bind2 = new Binding();
+                bind2.Source = currentCol;
+                bind2.Path = new PropertyPath("MaxDistance");
+                bind2.StringFormat = "Максимальное расстояние = {0}";
+                MaxDistanceText.SetBinding(TextBlock.TextProperty, bind2);
             } catch
             {
                 MessageBox.Show("Не удалось создать новую коллекцию.", "Ошибка.");
@@ -91,7 +103,7 @@ namespace GUI
                     MessageBox.Show("Нет открытой коллекции.", "Ошибка.");
                     return;
                 }
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 if (dlg.ShowDialog() == true)
                 {
                     currentCol.Save(dlg.FileName);
@@ -135,6 +147,12 @@ namespace GUI
                     bind.Source = currentCol;
                     bind.Path = new PropertyPath("IsChanged");
                     IsChangedText.SetBinding(TextBlock.TextProperty, bind);
+
+                    Binding bind2 = new Binding();
+                    bind2.Source = currentCol;
+                    bind2.Path = new PropertyPath("MaxDistance");
+                    bind2.StringFormat = "Максимальное расстояние = {0}";
+                    MaxDistanceText.SetBinding(TextBlock.TextProperty, bind2);
                 }
             } catch
             {
@@ -238,7 +256,6 @@ namespace GUI
                 }
             }
         }
-
         private void V3DataOnGridViewFilter(object sender, FilterEventArgs args)
         {
             V3Data item = (V3Data)args.Item;

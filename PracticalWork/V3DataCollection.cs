@@ -38,6 +38,7 @@ namespace PracticalWork
                 {
                     List.Clear();
                 }
+                throw new Exception();
             }
             finally
             {
