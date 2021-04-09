@@ -48,6 +48,7 @@ namespace GUI
             }
         }
         private V3MainCollection currentCol;
+        private CustomDataItem customDataItem;
         private bool isV3Col(object ob)
         {
             return false;
@@ -55,6 +56,10 @@ namespace GUI
         public MainWindow()
         {
             InitializeComponent();
+            customDataItem = new CustomDataItem(new V3DataCollection("q", DateTime.Now));
+            ModuleTextBox.DataContext = customDataItem;
+            YCoordTextBox.DataContext = customDataItem;
+            XCoordTextBox.DataContext = customDataItem;
         }
         private void New(object sender, RoutedEventArgs args)
         {
@@ -270,6 +275,37 @@ namespace GUI
                     args.Accepted = false;
                 }
             }
+        }
+        private void ModuleTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (V3DataColElements.SelectedItem == null)
+            {
+                return;
+            }
+            customDataItem.col = (V3DataCollection)V3DataColElements.SelectedItem;
+        }
+
+        private void YCoordTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (V3DataColElements.SelectedItem == null)
+            {
+                return;
+            }
+            customDataItem.col = (V3DataCollection)V3DataColElements.SelectedItem;
+        }
+
+        private void XCoordTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (V3DataColElements.SelectedItem == null)
+            {
+                return;
+            }
+            customDataItem.col = (V3DataCollection)V3DataColElements.SelectedItem;
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
         }
     }
 }

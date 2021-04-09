@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:GUI"
         xmlns:PracticalWork="clr-namespace:PracticalWork;assembly=PracticalWork"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="MainWindow" Height="600" Width="1230">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="CommandBinding_Executed"/>
+    </Window.CommandBindings>
     <Window.Resources>
         <CollectionViewSource Source="{Binding}" x:Key="allElemsView"/>
         <CollectionViewSource Source="{Binding}" x:Key="V3DataColView" Filter="V3DataColViewFilter"/>
@@ -32,11 +35,19 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <ListBox Name="allElements" HorizontalAlignment="Center" Height="438" VerticalAlignment="Center" Width="313" ItemsSource="{Binding Source={StaticResource allElemsView}}"/>
             <ListBox Name="V3DataColElements" Grid.Column="1" HorizontalAlignment="Center" Height="214" VerticalAlignment="Top" Width="313" ItemsSource="{Binding Source={StaticResource V3DataColView}}" RenderTransformOrigin="0.522,0.343"/>
             <ListBox Name="V3DataOnGridElements" Grid.Column="2" HorizontalAlignment="Center" Height="437" VerticalAlignment="Center" Width="316" ItemsSource="{Binding Source={StaticResource V3DataOnGridView}}"/>
             <ListBox HorizontalAlignment="Center" Height="219" Margin="0,219,0,0" VerticalAlignment="Top" Width="313" ItemsSource="{Binding ElementName=V3DataColElements, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource V3DataColTemplate}}" Grid.Column="1"/>
+            <TextBlock Grid.Column="3" Text="Введите y координату:" Margin="0,55,0,363" TextAlignment="Center" Width="263" Height="20"/>
+            <TextBlock Grid.Column="3" Text="Введите x координату:" Margin="0,10,0,408" TextAlignment="Center" Width="263" Height="20"/>
+            <TextBlock Grid.Column="3" Text="Введите величину поля:"  Margin="0,100,0,318" TextAlignment="Center" Width="263" Height="20"/>
+            <TextBox x:Name="YCoordTextBox" Width="263" Height="20" Text="{Binding YCoord, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Column="3" Margin="5,75,-5,343" TextChanged="YCoordTextBoxTextChanged"/>
+            <TextBox x:Name="ModuleTextBox" Margin="5,120,-5,300" Text="{Binding Module, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" TextChanged="ModuleTextBoxTextChanged" Grid.Column="3"/>
+            <TextBox x:Name="XCoordTextBox" Grid.Column="3" Margin="5,30,-5,388" Text="{Binding XCoord, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="263" Height="20" TextChanged="XCoordTextBoxTextChanged"/>
+            <Button Grid.Column="3" Content="Add DataItem" Margin="5,143,-5,271"/>
         </Grid>
         <Menu HorizontalAlignment="Center" Height="auto" VerticalAlignment="Top" Width="auto">
             <MenuItem Header="File">
