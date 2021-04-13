@@ -45,3 +45,4 @@ D:\C#\PracticalWork\obj\Debug\netcoreapp3.1\PracticalWork.AssemblyInfo.cs
 D:\C#\PracticalWork\obj\Debug\netcoreapp3.1\PracticalWork.csproj.CoreCompileInputs.cache
 D:\C#\PracticalWork\obj\Debug\netcoreapp3.1\PracticalWork.dll
 D:\C#\PracticalWork\obj\Debug\netcoreapp3.1\PracticalWork.pdb
+D:\C#\PracticalWork\obj\Debug\netcoreapp3.1\PracticalWork.csprojAssemblyReference.cache

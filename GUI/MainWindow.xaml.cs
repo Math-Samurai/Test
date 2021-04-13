@@ -99,71 +99,6 @@ namespace GUI
                 MessageBox.Show("Не удалось создать новую коллекцию.", "Ошибка.");
             }
         }
-        private void Save(object sender, RoutedEventArgs args)
-        {
-            try
-            {
-                if (currentCol == null)
-                {
-                    MessageBox.Show("Нет открытой коллекции.", "Ошибка.");
-                    return;
-                }
-                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-                if (dlg.ShowDialog() == true)
-                {
-                    currentCol.Save(dlg.FileName);
-                }
-            } catch
-            {
-                MessageBox.Show("Не удалось сохранить коллекцию.", "Ошибка.");
-            }
-        }
-        private void Open(object sender, RoutedEventArgs args)
-        {
-            try
-            {
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                if (currentCol != null && currentCol.IsChanged)
-                {
-                    MessageBoxResult res = MessageBox.Show("В коллекции есть несохранённые изменения, хотите сохранить их?", "Предупреждение.", MessageBoxButton.YesNoCancel);
-                    if (res == MessageBoxResult.Yes)
-                    {
-                        if (dlg.ShowDialog() == true)
-                        {
-                            currentCol.Save(dlg.FileName);
-                        }
-                    }
-                    else if (res == MessageBoxResult.Cancel)
-                    {
-                        return;
-                    }
-                }
-                if (dlg.ShowDialog() == true)
-                {
-                    if (currentCol == null)
-                    {
-                        currentCol = new V3MainCollection();
-                    }
-                    currentCol.Load(dlg.FileName);
-                    currentCol.IsChanged = false;
-                    this.DataContext = currentCol;
-
-                    Binding bind = new Binding();
-                    bind.Source = currentCol;
-                    bind.Path = new PropertyPath("IsChanged");
-                    IsChangedText.SetBinding(TextBlock.TextProperty, bind);
-
-                    Binding bind2 = new Binding();
-                    bind2.Source = currentCol;
-                    bind2.Path = new PropertyPath("MaxDistance");
-                    bind2.StringFormat = "Максимальное расстояние = {0}";
-                    MaxDistanceText.SetBinding(TextBlock.TextProperty, bind2);
-                }
-            } catch
-            {
-                MessageBox.Show("Не удалось загрузить коллекцию.", "Ошибка.");
-            }
-        }
         private void AddDefaults(object sender, RoutedEventArgs args)
         {
             try
@@ -231,22 +166,6 @@ namespace GUI
                 MessageBox.Show("Ошибка при чтении из файла.", "Ошибка.");
             }
         }
-        private void Remove(object sender, RoutedEventArgs args)
-        {
-            try
-            {
-                if (currentCol == null)
-                {
-                    MessageBox.Show("Сначала создайте коллекцию.", "Ошибка.");
-                    return;
-                }
-                V3Data col = (V3Data)allElements.SelectedItem;
-                currentCol.Remove(col.Data, col.Time);
-            } catch
-            {
-                MessageBox.Show("Не удалось удалить элемент.", "Ошибка.");
-            }
-        }
         private void V3DataColViewFilter(object sender, FilterEventArgs args)
         {
             V3Data item = (V3Data)args.Item;
@@ -284,7 +203,6 @@ namespace GUI
             }
             customDataItem.col = (V3DataCollection)V3DataColElements.SelectedItem;
         }
-
         private void YCoordTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             if (V3DataColElements.SelectedItem == null)
@@ -293,7 +211,6 @@ namespace GUI
             }
             customDataItem.col = (V3DataCollection)V3DataColElements.SelectedItem;
         }
-
         private void XCoordTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             if (V3DataColElements.SelectedItem == null)
@@ -302,10 +219,126 @@ namespace GUI
             }
             customDataItem.col = (V3DataCollection)V3DataColElements.SelectedItem;
         }
-
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void CommandBinding_Open(object sender, ExecutedRoutedEventArgs e)
         {
+            try
+            {
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                if (currentCol != null && currentCol.IsChanged)
+                {
+                    MessageBoxResult res = MessageBox.Show("В коллекции есть несохранённые изменения, хотите сохранить их?", "Предупреждение.", MessageBoxButton.YesNoCancel);
+                    if (res == MessageBoxResult.Yes)
+                    {
+                        if (dlg.ShowDialog() == true)
+                        {
+                            currentCol.Save(dlg.FileName);
+                        }
+                    }
+                    else if (res == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+                if (dlg.ShowDialog() == true)
+                {
+                    if (currentCol == null)
+                    {
+                        currentCol = new V3MainCollection();
+                        this.DataContext = currentCol;
 
+                        Binding bind3 = new Binding();
+                        bind3.Source = currentCol;
+                        bind3.Path = new PropertyPath("IsChanged");
+                        bind3.StringFormat = "Была ли изменена коллекция с момента своего послежнего сохранения: {0}.";
+                        IsChangedText.SetBinding(TextBlock.TextProperty, bind3);
+
+                        Binding bind4 = new Binding();
+                        bind4.Source = currentCol;
+                        bind4.Path = new PropertyPath("MaxDistance");
+                        bind4.StringFormat = "Максимальное расстояние = {0}";
+                        MaxDistanceText.SetBinding(TextBlock.TextProperty, bind4);
+                    }
+                    currentCol.Load(dlg.FileName);
+                    currentCol.IsChanged = false;
+                    this.DataContext = currentCol;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Не удалось загрузить коллекцию.", "Ошибка.");
+            }
+        }
+        private void CommandBinding_CanSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (currentCol == null)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            if (!currentCol.IsChanged)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            e.CanExecute = true;
+        }
+        private void CommandBinding_Save(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                if (dlg.ShowDialog() == true)
+                {
+                    currentCol.Save(dlg.FileName);
+                }
+            } catch
+            {
+                MessageBox.Show("Не удалось сохранить коллекцию.", "Ошибка");
+            }
+        }
+        private void CommandBinding_CanDelete(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (allElements.SelectedItem != null)
+            {
+                e.CanExecute = true;
+                return;
+            }
+            e.CanExecute = false;
+        }
+        private void CommandBinding_Delete(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                V3Data col = (V3Data)allElements.SelectedItem;
+                currentCol.Remove(col.Data, col.Time);
+            } catch
+            {
+                MessageBox.Show("Не удалось удалить элемент из коллекции.", "Ошибка.");
+            }
+        }
+        private void CommandBinding_CanAddDataItem(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (V3DataColElements.SelectedItem == null)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            if (Validation.GetHasError(XCoordTextBox) || Validation.GetHasError(YCoordTextBox) || Validation.GetHasError(ModuleTextBox))
+            {
+                e.CanExecute = false;
+                return;
+            }
+            e.CanExecute = true;
+        }
+        private void CommandBinding_AddDataItem(object sender, ExecutedRoutedEventArgs e)
+        {
+            V3DataCollection col = (V3DataCollection)V3DataColElements.SelectedItem;
+            DataItem item = new DataItem(new System.Numerics.Vector2(float.Parse(XCoordTextBox.Text), float.Parse(YCoordTextBox.Text)), double.Parse(ModuleTextBox.Text));
+            col.Add(item);
+            currentCol.IsChanged = true;
+            currentCol.Save("temp");
+            currentCol.Load("temp");
+            System.IO.File.Delete("temp");
         }
     }
 }

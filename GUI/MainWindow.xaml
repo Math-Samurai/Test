@@ -8,7 +8,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1230">
     <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.Open" Executed="CommandBinding_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Open"
+                        Executed="CommandBinding_Open"/>
+        <CommandBinding Command="ApplicationCommands.Save"
+                        CanExecute="CommandBinding_CanSave"
+                        Executed="CommandBinding_Save"/>
+        <CommandBinding Command="ApplicationCommands.Delete"
+                        CanExecute="CommandBinding_CanDelete"
+                        Executed="CommandBinding_Delete"/>
+        <CommandBinding Command="{x:Static local:Commands.AddDataItem}"
+                        CanExecute="CommandBinding_CanAddDataItem"
+                        Executed="CommandBinding_AddDataItem"/>
     </Window.CommandBindings>
     <Window.Resources>
         <CollectionViewSource Source="{Binding}" x:Key="allElemsView"/>
@@ -40,27 +50,30 @@
             <ListBox Name="allElements" HorizontalAlignment="Center" Height="438" VerticalAlignment="Center" Width="313" ItemsSource="{Binding Source={StaticResource allElemsView}}"/>
             <ListBox Name="V3DataColElements" Grid.Column="1" HorizontalAlignment="Center" Height="214" VerticalAlignment="Top" Width="313" ItemsSource="{Binding Source={StaticResource V3DataColView}}" RenderTransformOrigin="0.522,0.343"/>
             <ListBox Name="V3DataOnGridElements" Grid.Column="2" HorizontalAlignment="Center" Height="437" VerticalAlignment="Center" Width="316" ItemsSource="{Binding Source={StaticResource V3DataOnGridView}}"/>
-            <ListBox HorizontalAlignment="Center" Height="219" Margin="0,219,0,0" VerticalAlignment="Top" Width="313" ItemsSource="{Binding ElementName=V3DataColElements, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource V3DataColTemplate}}" Grid.Column="1"/>
+            <ListBox Name="V3DataItems" HorizontalAlignment="Center" Height="219" Margin="0,219,0,0" VerticalAlignment="Top" Width="313" ItemsSource="{Binding ElementName=V3DataColElements, Path=SelectedItem}" ItemTemplate="{Binding Source={StaticResource V3DataColTemplate}}" Grid.Column="1"/>
             <TextBlock Grid.Column="3" Text="Введите y координату:" Margin="0,55,0,363" TextAlignment="Center" Width="263" Height="20"/>
             <TextBlock Grid.Column="3" Text="Введите x координату:" Margin="0,10,0,408" TextAlignment="Center" Width="263" Height="20"/>
             <TextBlock Grid.Column="3" Text="Введите величину поля:"  Margin="0,100,0,318" TextAlignment="Center" Width="263" Height="20"/>
             <TextBox x:Name="YCoordTextBox" Width="263" Height="20" Text="{Binding YCoord, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Grid.Column="3" Margin="5,75,-5,343" TextChanged="YCoordTextBoxTextChanged"/>
             <TextBox x:Name="ModuleTextBox" Margin="5,120,-5,300" Text="{Binding Module, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" TextChanged="ModuleTextBoxTextChanged" Grid.Column="3"/>
             <TextBox x:Name="XCoordTextBox" Grid.Column="3" Margin="5,30,-5,388" Text="{Binding XCoord, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="263" Height="20" TextChanged="XCoordTextBoxTextChanged"/>
-            <Button Grid.Column="3" Content="Add DataItem" Margin="5,143,-5,271"/>
+            <Button Grid.Column="3" Content="Add DataItem" Margin="5,143,-5,271" Command="{x:Static local:Commands.AddDataItem}"/>
+            <Button Grid.Column="3" Content="Open" Margin="5,172,-5,242" Command="Open"/>
+            <Button Grid.Column="3" Content="Save" Margin="5,201,-5,213" Command="Save"/>
+            <Button Grid.Column="3" Content="Delete" Margin="5,230,-5,184" Command="Delete"/>
         </Grid>
         <Menu HorizontalAlignment="Center" Height="auto" VerticalAlignment="Top" Width="auto">
             <MenuItem Header="File">
                 <MenuItem Header="New" Click="New"/>
-                <MenuItem Header="Open" Click="Open"/>
-                <MenuItem Header="Save" Click="Save"/>
+                <MenuItem Header="Open" Command="Open"/>
+                <MenuItem Header="Save" Command="Save"/>
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Add defaults" Click="AddDefaults"/>
                 <MenuItem Header="Add default V3DataCollection" Click="AddDefaultV3DataCollection"/>
                 <MenuItem Header="Add default V3DataOnGrid" Click="AddDefaultV3DataOnGrid"/>
                 <MenuItem Header="Add element from file" Click="AddFromFile"/>
-                <MenuItem Header="Remove" Click="Remove"/>
+                <MenuItem Header="Remove" Command="Delete"/>
             </MenuItem>
         </Menu>
         <TextBlock Name="IsChangedText" HorizontalAlignment="Left" Height="53" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="314" Margin="0,0,0,-50"/>

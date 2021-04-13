@@ -59,6 +59,17 @@ namespace PracticalWork
                 }
             }
         }
+        public List<V3Data> List
+        {
+            get
+            {
+                return list;
+            }
+            set
+            {
+                list = value;
+            }
+        }
         public int Count
         {
             get
